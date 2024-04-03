@@ -1,12 +1,17 @@
 
 import click
-from api.models import db, User
+from api.models import db, User, Planet
 
 """
 In this file, you can add as many commands as you want using the @app.cli.command decorator
 Flask commands are usefull to run cronjobs or tasks outside of the API but sill in integration 
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
+planets = [{"name": "Mercurio", "population": 200},
+            {"name": "Venus" , "population": 100},
+            {"name": "Tierra", "population":600},
+            {"name": "Marte", "population":400},
+            {"name": "Jupiter", "population":800}]
 def setup_commands(app):
     
     """ 
@@ -28,6 +33,19 @@ def setup_commands(app):
             print("User: ", user.email, " created.")
 
         print("All test users created")
+
+    @app.cli.command("insert-planets")
+    def insert_planets():
+        print("Creating planets")
+        for x in range(0, len(planets)):
+            planet = Planet()
+            planet.name = planets[x]["name"]
+            planet.population = planets[x]["population"]
+            db.session.add(planet)
+            db.session.commit()
+            print("Planeta {} creado!".format(planets[x]["name"]))
+        print("Todos los planetas han sido creados")
+
 
     @app.cli.command("insert-test-data")
     def insert_test_data():
